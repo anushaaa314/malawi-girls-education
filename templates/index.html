@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Girls' Education in Malawi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"
+</head>
+
+<body style="font-family: 'Times New Roman', Times, serif;">
+    <h1>Girls' Education in Malawi</h1>
+
+    <p>
+        Malawi is a country in Southeastern Africa with approximately 11 million women living in it. Recently, these women have gained more access to  higher education, but social issues (such as period poverty, child marriges, pregnancies, and gender expectations) still remain in place.
+    </p>
+
+    <button onclick="showSection('graph1')">
+        Press to see a graph
+    </button>
+
+    <section id="graph1" hidden>
+        <h2>Secondary Education Enrollment Rate in Malawi over Time</h2>
+
+        <canvas id="enrollmentChart" width="600" height="300"></canvas>
+
+        <p>
+            From 1990 to 2015, the secondary education rate for women in Malawi has grown by an impressive 400%. About a quarter of girls were enrolled in a form of secondary education as of 2015. Several organizations like CAMFED (Campaign for Female Education) Malawi, FAWEMA (Forum for African Women Educationalists - Malawi Chapter), and UNESCO have helped drive this change.
+        </p>
+
+        <button onclick="showSection('graph2')">
+            Press to see the next data visualization.
+        </button>
+    </section>
+
+    <section id="graph2" hidden>
+        <p>
+            However, only 6.75% of girls went on to  actually complete their secondary education in 2015.
+        </p>
+
+        <h2>Secondary Education Completion Rates in Malawi Over Time</h2>
+
+        <canvas id="completionChart" width="600" height="300"></canvas>
+
+        <h4>Based on these findings, my proposed research question is:</h4>
+
+        <h1>How can we prevent the factors that cause Malawi girls to leave their secondary education unfinished?</h1>
+    </section>
+    <div
+      id="chart-data"
+      data-years='{{ years | tojson | forceescape }}'
+      data-enrollment='{{ secondary_education | tojson | forceescape }}'
+      data-completion='{{ secondary_education_completed | tojson | forceescape }}'
+    ></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const years = JSON.parse(
+            document.getElementById("chart-data").dataset.years
+        );
+        const secondaryEducation = JSON.parse(
+            document.getElementById("chart-data").dataset.enrollment
+        );
+        const secondaryCompleted = JSON.parse(
+            document.getElementById("chart-data").dataset.completion
+        );
+
+        function showSection(id) {
+            document.getElementById(id).hidden = false;
+
+            if (id === "graph1") {
+                drawEnrollmentChart();
+            }
+
+            if (id === "graph2") {
+                drawCompletionChart();
+            }
+        }
+
+        function drawEnrollmentChart() {
+            new Chart(document.getElementById("enrollmentChart"), {
+                type: "line",
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: "Enrollment Rate (%)",
+                        data: secondaryEducation
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Enrollment Rate (%)"
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Year"
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function drawCompletionChart() {
+            new Chart(document.getElementById("completionChart"), {
+                type: "line",
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: "Completion Rate (%)",
+                        data: secondaryCompleted
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            min: 1,
+                            max: 7,
+                            title: {
+                                display: true,
+                                text: "Completion Rate (%)"
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Year"
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
